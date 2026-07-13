@@ -108,7 +108,18 @@ def list_stories(current_user: User = Depends(get_current_user), db: Session = D
                 "description": s.description,
                 "target_role": s.target_role,
                 "difficulty": s.difficulty,
-                "created_at": s.created_at
+                "created_at": s.created_at,
+                "scenes": [
+                    {
+                        "id": sc.id,
+                        "scene_number": sc.scene_number,
+                        "scenario_text": sc.scenario_text,
+                        "character_information": sc.character_information,
+                        "choices_json": sc.choices_json,
+                        "learning_objective": sc.learning_objective
+                    }
+                    for sc in s.scenes
+                ]
             }
             for s in stories
         ]
