@@ -2,9 +2,15 @@ import axios from 'axios';
 
 const API_BASE = 'http://localhost:8000/api'; // Direct path to local backend
 
+// Synchronize tokens on initialization to support existing sessions
+const existingToken = localStorage.getItem('lumen_token');
+if (existingToken && !localStorage.getItem('base44_access_token')) {
+  localStorage.setItem('base44_access_token', existingToken);
+}
+
 // Helper to get token authorization headers
 const getHeaders = () => {
-  const token = localStorage.getItem('lumen_token');
+  const token = localStorage.getItem('base44_access_token') || localStorage.getItem('lumen_token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
@@ -23,7 +29,7 @@ client.interceptors.response.use(
 const localDb = {
   auth: {
     isAuthenticated: async () => {
-      const token = localStorage.getItem('lumen_token');
+      const token = localStorage.getItem('base44_access_token') || localStorage.getItem('lumen_token');
       return !!token;
     },
     me: async () => {
@@ -44,6 +50,11 @@ const localDb = {
       const res = await client.post(`${API_BASE}/auth/login`, { email, password });
       const token = res.data.data.access_token;
       localStorage.setItem('lumen_token', token);
+      localStorage.setItem('base44_access_token', token);
+      try {
+        const { appParams } = await import('@/lib/app-params');
+        appParams.token = token;
+      } catch (e) {}
       return res.data.data;
     },
     register: async ({ email, password }) => {
@@ -64,10 +75,14 @@ const localDb = {
       const regToken = localStorage.getItem('lumen_register_token');
       if (regToken) {
         localStorage.setItem('lumen_token', regToken);
+        localStorage.setItem('base44_access_token', regToken);
         localStorage.removeItem('lumen_register_token');
+        try {
+          const { appParams } = await import('@/lib/app-params');
+          appParams.token = regToken;
+        } catch (e) {}
         return { access_token: regToken };
       }
-      // Return a dummy token if registering was not in progress
       return { access_token: 'mock-local-token' };
     },
     resendOtp: async (email) => {
@@ -75,9 +90,21 @@ const localDb = {
     },
     setToken: (token) => {
       localStorage.setItem('lumen_token', token);
+      localStorage.setItem('base44_access_token', token);
+      try {
+        import('@/lib/app-params').then(({ appParams }) => {
+          appParams.token = token;
+        });
+      } catch (e) {}
     },
     logout: () => {
       localStorage.removeItem('lumen_token');
+      localStorage.removeItem('base44_access_token');
+      try {
+        import('@/lib/app-params').then(({ appParams }) => {
+          appParams.token = null;
+        });
+      } catch (e) {}
       window.location.href = '/login';
     },
     updateMe: async ({ onboarding_role }) => {
