@@ -1,0 +1,30 @@
+{
+  "name": "Reflection",
+  "type": "object",
+  "properties": {
+    "experience_title": {
+      "type": "string"
+    },
+    "what_you_learned": {
+      "type": "string"
+    },
+    "signs_noticed": {
+      "type": "string"
+    },
+    "action_taken": {
+      "type": "string"
+    },
+    "ai_summary": {
+      "type": "string"
+    },
+    "key_lessons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "experience_title"
+  ]
+}

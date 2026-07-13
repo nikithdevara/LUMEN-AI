@@ -1,0 +1,110 @@
+{
+  "name": "Experience",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Workplace Awareness",
+        "Hospitality Safety",
+        "Community Vigilance",
+        "Online Safety",
+        "Transit Safety"
+      ],
+      "default": "Workplace Awareness"
+    },
+    "difficulty_level": {
+      "type": "string",
+      "enum": [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+      ],
+      "default": "Beginner"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "default": 10
+    },
+    "cover_image": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string",
+      "default": "Sparkles"
+    },
+    "accent_color": {
+      "type": "string",
+      "default": "aiblue"
+    },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "narrative": {
+            "type": "string"
+          },
+          "context": {
+            "type": "string"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "type": "string"
+                },
+                "ai_explanation": {
+                  "type": "string"
+                },
+                "is_recommended": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "next_scene": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "published"
+    },
+    "order": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ]
+}

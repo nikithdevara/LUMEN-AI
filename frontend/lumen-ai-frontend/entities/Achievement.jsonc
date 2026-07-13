@@ -1,0 +1,38 @@
+{
+  "name": "Achievement",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string",
+      "default": "Award"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Learning",
+        "Reflection",
+        "Safety",
+        "Community"
+      ],
+      "default": "Learning"
+    },
+    "color": {
+      "type": "string",
+      "default": "gold"
+    },
+    "earned": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ]
+}

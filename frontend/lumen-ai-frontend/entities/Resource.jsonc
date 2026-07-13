@@ -1,0 +1,55 @@
+{
+  "name": "Resource",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Article",
+        "Guide",
+        "Video",
+        "Awareness Material"
+      ],
+      "default": "Article"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Learning Resources",
+        "Safety Guidelines",
+        "Community Actions",
+        "Awareness Materials"
+      ],
+      "default": "Learning Resources"
+    },
+    "url": {
+      "type": "string"
+    },
+    "cover_image": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ]
+}

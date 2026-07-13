@@ -1,0 +1,40 @@
+{
+  "name": "UserProgress",
+  "type": "object",
+  "properties": {
+    "experience_id": {
+      "type": "string"
+    },
+    "experience_title": {
+      "type": "string"
+    },
+    "progress_percent": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "completed"
+      ],
+      "default": "not_started"
+    },
+    "current_scene": {
+      "type": "number",
+      "default": 0
+    },
+    "score": {
+      "type": "number",
+      "default": 0
+    },
+    "saved": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "experience_id"
+  ]
+}
