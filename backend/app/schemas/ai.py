@@ -13,12 +13,13 @@ class ExplainChoiceResponse(BaseModel):
     learning_takeaway: str
 
 class ReflectionRequest(BaseModel):
-    user_id: int
-    story_id: int
+    user_id: Optional[int] = None
+    story_id: Optional[int] = None
     reflection_text: Optional[str] = None
     what_you_learned: Optional[str] = None
     signs_noticed: Optional[str] = None
     action_taken: Optional[str] = None
+    role: Optional[str] = None
 
 class ReflectionResponse(BaseModel):
     summary: str

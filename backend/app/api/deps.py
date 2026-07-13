@@ -25,3 +25,21 @@ def get_current_user(
             detail="User not found",
         )
     return user
+
+reusable_oauth2_optional = OAuth2PasswordBearer(
+    tokenUrl="/api/auth/login",
+    auto_error=False
+)
+
+def get_optional_current_user(
+    db: Session = Depends(get_db), token: str = Depends(reusable_oauth2_optional)
+) -> User:
+    if not token:
+        return None
+    try:
+        sub = security.decode_access_token(token)
+        if not sub:
+            return None
+        return db.query(User).filter(User.email == sub).first()
+    except Exception:
+        return None

@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from typing import List, Optional
 from app.database.connection import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_current_user
 from app.models.user import User
 from app.models.story import Story, StoryScene
 from app.models.interaction import UserChoice, Reflection
@@ -9,7 +11,33 @@ from app.models.quiz import QuizQuestion
 from app.schemas.ai import ExplainChoiceRequest, ReflectionRequest
 from app.schemas.quiz import QuizGenerateRequest
 from app.ai_engine import explain_choice, analyze_reflection, generate_quiz
+from app.ai_engine.story_generator import generate_awareness_story
+from app.ai_engine.explanation_engine import explain_user_choice
+from app.ai_engine.reflection_engine import analyze_user_reflection
+from app.ai_engine.quiz_engine import generate_knowledge_check
+from app.ai_engine.recommendation_engine import generate_user_recommendations
 from app.utils.exceptions import LumenException
+
+# Input payload schemas for the new structured E2E endpoints
+class GenerateStoryRequest(BaseModel):
+    role: str
+    age_group: Optional[str] = "Young Adult"
+    difficulty: str
+
+class ExplanationRequest(BaseModel):
+    scenario: str
+    choice: str
+
+class QuizPayload(BaseModel):
+    role: str
+    story_topic: str
+    difficulty: str
+
+class RecommendationsPayload(BaseModel):
+    role: str
+    completed_stories: str
+    quiz_score: str
+    reflection: str
 
 router = APIRouter()
 
@@ -64,9 +92,20 @@ def get_explain_choice(
 @router.post("/reflection")
 def get_reflection(
     req: ReflectionRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_optional_current_user),
     db: Session = Depends(get_db)
 ):
+    # Check if this is the public content-only reflection request format
+    if not req.story_id or req.role:
+        role_name = req.role or "Student"
+        learned = req.reflection_text or req.what_you_learned or "General awareness principles"
+        data = analyze_user_reflection(learned, role_name)
+        return {
+            "success": True,
+            "status": "success",
+            "data": data
+        }
+
     story = db.query(Story).filter(Story.id == req.story_id).first()
     if not story:
         raise LumenException(status_code=404, message="Story not found")
@@ -108,6 +147,7 @@ def get_reflection(
     db.commit()
 
     return {
+        "success": True,
         "status": "success",
         "data": reflection_data
     }
@@ -195,4 +235,41 @@ def get_ai_status():
     return {
         "provider": "Google Gemini",
         "status": status_str
+    }
+
+@router.post("/story/generate")
+def api_generate_story(req: GenerateStoryRequest):
+    data = generate_awareness_story(role=req.role, difficulty=req.difficulty, age_group=req.age_group)
+    return {
+        "success": True,
+        "data": data
+    }
+
+@router.post("/explanation")
+def api_explain_choice(req: ExplanationRequest):
+    data = explain_user_choice(scenario=req.scenario, choice=req.choice)
+    return {
+        "success": True,
+        "data": data
+    }
+
+@router.post("/quiz")
+def api_generate_quiz(req: QuizPayload):
+    data = generate_knowledge_check(role=req.role, story_topic=req.story_topic, difficulty=req.difficulty)
+    return {
+        "success": True,
+        "data": data
+    }
+
+@router.post("/recommendations")
+def api_generate_recommendations(req: RecommendationsPayload):
+    data = generate_user_recommendations(
+        role=req.role,
+        completed_stories=req.completed_stories,
+        quiz_score=req.quiz_score,
+        reflection=req.reflection
+    )
+    return {
+        "success": True,
+        "data": data
     }

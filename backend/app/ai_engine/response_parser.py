@@ -1,30 +1,35 @@
 import json
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-def parse_llm_json_response(raw_text: str) -> Dict[str, Any]:
+def parse_json_string(raw_text: str) -> Dict[str, Any]:
     """
-    Cleans raw LLM text by removing markdown json blocks and parses it to a Python dict.
+    Cleans markdown json wrapper blocks and parses string to dict.
     """
     if not raw_text:
-        raise ValueError("Empty response received from AI model.")
-
-    cleaned = raw_text.strip()
+        raise ValueError("AI response was empty.")
     
-    # Remove markdown code fence triggers if present
+    cleaned = raw_text.strip()
     if cleaned.startswith("```"):
-        # Match ```json or ``` and strip both ends
         lines = cleaned.splitlines()
         if lines[0].startswith("```"):
             lines = lines[1:]
         if lines and lines[-1].strip() == "```":
             lines = lines[:-1]
         cleaned = "\n".join(lines).strip()
-
+        
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse AI JSON response: {e}. Raw text: {raw_text}")
+        logger.error(f"JSONDecodeError: {e}. Raw Text: {raw_text}")
         raise ValueError(f"AI response did not contain valid JSON: {e}")
+
+def validate_json_schema(parsed_dict: Dict[str, Any], required_keys: List[str]) -> bool:
+    """
+    Validates that a parsed dictionary contains all required top-level keys.
+    """
+    if not isinstance(parsed_dict, dict):
+        return False
+    return all(key in parsed_dict for key in required_keys)
