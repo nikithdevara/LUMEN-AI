@@ -19,6 +19,53 @@ logger = logging.getLogger(__name__)
 try:
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables initialized successfully.")
+    
+    # Run automatic database seeding for roles and demo users
+    def seed_database():
+        from app.database.connection import SessionLocal
+        from app.models.user import Role, User
+        from app.core.security import get_password_hash
+
+        db = SessionLocal()
+        try:
+            # Seed Roles if missing
+            roles = ["Student", "Parent", "Hotel Staff", "Volunteer"]
+            role_map = {}
+            for r_name in roles:
+                db_role = db.query(Role).filter(Role.role_name == r_name).first()
+                if not db_role:
+                    db_role = Role(role_name=r_name)
+                    db.add(db_role)
+                    db.commit()
+                    db.refresh(db_role)
+                    logger.info(f"Seeded role: {r_name}")
+                role_map[r_name] = db_role.id
+
+            # Seed Demo Logins for Quick Access
+            demo_users = [
+                {"email": "student@lumen.ai", "name": "Sam Student", "role": "Student"},
+                {"email": "parent@lumen.ai", "name": "Patricia Parent", "role": "Parent"},
+                {"email": "staff@lumen.ai", "name": "Harry Hotel Staff", "role": "Hotel Staff"},
+                {"email": "volunteer@lumen.ai", "name": "Valerie Volunteer", "role": "Volunteer"},
+            ]
+            for u in demo_users:
+                db_user = db.query(User).filter(User.email == u["email"]).first()
+                if not db_user:
+                    db_user = User(
+                        email=u["email"],
+                        name=u["name"],
+                        password_hash=get_password_hash("password123"),
+                        role_id=role_map[u["role"]]
+                    )
+                    db.add(db_user)
+                    db.commit()
+                    logger.info(f"Seeded demo user: {u['email']}")
+        except Exception as se:
+            logger.error(f"Error seeding database: {se}")
+        finally:
+            db.close()
+
+    seed_database()
 except Exception as e:
     logger.error(f"Error initializing database tables: {e}")
 
