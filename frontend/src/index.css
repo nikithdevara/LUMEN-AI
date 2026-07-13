@@ -294,3 +294,9 @@ body, .glass, .glass-card, .glass-dark, nav, main, button, a, input, textarea {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(30, 58, 95, 0.3);
 }
+
+@layer utilities {
+  .ease-spring-nav {
+    transition-timing-function: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  }
+}
