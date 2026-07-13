@@ -22,7 +22,7 @@ export default function Login() {
     setLoading(true);
     try {
       await db.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      window.location.href = "/workspace";
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {
