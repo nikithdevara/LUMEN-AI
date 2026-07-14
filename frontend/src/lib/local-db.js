@@ -314,6 +314,40 @@ const localDb = {
         }
       }
     }
+  },
+  settings: {
+    get: async () => {
+      try {
+        const res = await client.get(`${API_BASE}/settings`, { headers: getHeaders() });
+        return res.data;
+      } catch (e) {
+        return { dark_mode: false, email_notifications: true, profile_visible: true };
+      }
+    },
+    update: async (settingsData) => {
+      try {
+        const res = await client.put(`${API_BASE}/settings`, settingsData, { headers: getHeaders() });
+        return res.data;
+      } catch (e) {
+        return settingsData;
+      }
+    }
+  },
+  dashboard: {
+    getStats: async () => {
+      try {
+        const res = await client.get(`${API_BASE}/dashboard`, { headers: getHeaders() });
+        return res.data;
+      } catch (e) {
+        return {
+          completed_stories_count: 0,
+          in_progress_stories_count: 0,
+          saved_resources_count: 0,
+          achievements_count: 0,
+          overall_progress_percentage: 0
+        };
+      }
+    }
   }
 };
 

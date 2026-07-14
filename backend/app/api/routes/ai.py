@@ -237,6 +237,7 @@ def get_ai_status():
         "status": status_str
     }
 
+@router.post("/story")
 @router.post("/story/generate")
 def api_generate_story(req: GenerateStoryRequest):
     data = generate_awareness_story(role=req.role, difficulty=req.difficulty, age_group=req.age_group)

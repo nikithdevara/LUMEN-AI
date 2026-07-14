@@ -21,6 +21,8 @@ import KnowledgeCheck from '@/pages/KnowledgeCheck';
 import Recommendations from '@/pages/Recommendations';
 import ResourceLibrary from '@/pages/ResourceLibrary';
 import Profile from '@/pages/Profile';
+import Settings from '@/pages/Settings';
+import Dashboard from '@/pages/Dashboard';
 
 function App() {
   return (
@@ -45,9 +47,12 @@ function App() {
                 <Route path="/story/:id" element={<StoryExperience />} />
                 <Route path="/reflection/:id" element={<Reflection />} />
                 <Route path="/knowledge-check/:id" element={<KnowledgeCheck />} />
+                <Route path="/quiz/:id" element={<KnowledgeCheck />} />
                 <Route path="/recommendations" element={<Recommendations />} />
                 <Route path="/resources" element={<ResourceLibrary />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/dashboard" element={<Dashboard />} />
               </Route>
             </Route>
 
