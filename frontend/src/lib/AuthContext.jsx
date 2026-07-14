@@ -95,6 +95,9 @@ export const AuthProvider = ({ children }) => {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
       const currentUser = await db.auth.me();
+      if (!currentUser) {
+        throw { status: 401, message: 'User session expired or not authenticated' };
+      }
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
