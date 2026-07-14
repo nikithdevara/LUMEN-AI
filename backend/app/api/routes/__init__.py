@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from app.api.routes import auth, users, stories, ai, quiz, recommendations, settings, dashboard
 from app.api.routes.users import get_profile
+from app.ai_modules import ai_modules_router
 
 api_router = APIRouter()
 
@@ -11,6 +12,7 @@ api_router.get("/profile", tags=["users"])(get_profile)
 
 api_router.include_router(stories.router, prefix="/stories", tags=["stories"])
 api_router.include_router(stories.router, prefix="/story", tags=["story"])
+api_router.include_router(ai_modules_router, prefix="/ai", tags=["ai-modules"])
 api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 api_router.include_router(quiz.router, prefix="/quiz", tags=["quiz"])
 api_router.include_router(recommendations.router, prefix="/recommendations", tags=["recommendations"])

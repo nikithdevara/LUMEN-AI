@@ -36,3 +36,40 @@ class Settings(Base):
     profile_visible = Column(Boolean, default=True)
 
     user = relationship("User", backref="settings")
+
+class GeneratedContent(Base):
+    __tablename__ = "generated_content"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    content_type = Column(String, nullable=False)  # e.g., "document", "presentation", "social"
+    title = Column(String, nullable=False)
+    body_json = Column(JSON, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", backref="generated_contents")
+
+class Campaign(Base):
+    __tablename__ = "campaigns"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    campaign_name = Column(String, nullable=False)
+    objectives = Column(JSON, nullable=True)
+    audience = Column(String, nullable=True)
+    details_json = Column(JSON, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", backref="campaigns_list")
+
+class Image(Base):
+    __tablename__ = "images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    prompt = Column(String, nullable=False)
+    image_url = Column(String, nullable=False)
+    metadata_json = Column(JSON, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", backref="images_list")
