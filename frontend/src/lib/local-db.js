@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8000/api'; // Direct path to local backend
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'; // Dynamic production/dev endpoint
 
 // Synchronize tokens on initialization to support existing sessions
 const existingToken = localStorage.getItem('lumen_token');

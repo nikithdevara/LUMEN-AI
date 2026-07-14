@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api"
     SECRET_KEY: str = os.getenv("SECRET_KEY", "lumen-secret-key-12345")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ALLOWED_ORIGINS: list[str] = ["*"]
     
     # Database Settings
     DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/lumen_ai")

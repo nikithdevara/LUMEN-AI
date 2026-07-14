@@ -52,7 +52,8 @@ class GeminiService:
                     
                     response = self.gemini_model.generate_content(
                         content_list,
-                        generation_config={"response_mime_type": "application/json"}
+                        generation_config={"response_mime_type": "application/json"},
+                        request_options={"timeout": 15.0}
                     )
                     if response and response.text:
                         return response.text

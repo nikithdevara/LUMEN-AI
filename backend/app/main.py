@@ -1,9 +1,13 @@
 import logging
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+from app.database.connection import get_db
 
 from app.core.config import settings
 from app.api.routes import api_router
@@ -76,14 +80,28 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Set CORS middleware
+# Enable response compression using GZip
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# Set CORS middleware based on settings configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_credentials=True if "*" not in settings.ALLOWED_ORIGINS else False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Custom secure headers middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
 
 # Custom exception handling to match required error response format:
 # {"status": "error", "message": "error description"}
@@ -121,6 +139,19 @@ async def general_exception_handler(request: Request, exc: Exception):
             "message": "Internal Server Error"
         }
     )
+
+@app.get("/health", tags=["system"])
+def health_check(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "gemini_api": "configured" if settings.GEMINI_API_KEY else "not_configured"
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        raise HTTPException(status_code=503, detail="Database connection offline")
 
 # Include central router
 app.include_router(api_router, prefix=settings.API_V1_STR)
