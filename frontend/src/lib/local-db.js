@@ -126,8 +126,30 @@ const localDb = {
     },
     resetPassword: async () => true,
     resetPasswordRequest: async () => true,
-    loginWithProvider: (provider, redirectUrl) => {
-      window.location.href = redirectUrl || '/';
+    loginWithProvider: async (provider, redirectUrl) => {
+      const randId = Math.floor(100000 + Math.random() * 900000);
+      const email = `google_user_${randId}@gmail.com`;
+      const name = `Google User ${randId}`;
+      try {
+        const res = await client.post(`${API_BASE}/auth/register`, {
+          email,
+          name,
+          password: "password123"
+        });
+        const token = res.data.access_token || res.data.token || res.data.data?.access_token;
+        if (token) {
+          localStorage.setItem('lumen_token', token);
+          try {
+            const { appParams } = await import('@/lib/app-params');
+            appParams.token = token;
+          } catch (e) {}
+          window.location.href = "/onboarding";
+          return;
+        }
+      } catch (e) {
+        console.error("Google login simulation error:", e);
+      }
+      window.location.href = "/login";
     },
     redirectToLogin: () => {
       window.location.href = '/login';

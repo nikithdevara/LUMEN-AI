@@ -34,6 +34,21 @@ export default function Login() {
     db.auth.loginWithProvider("google", "/");
   };
 
+  const handleDemoLogin = async (demoEmail, demoPassword) => {
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setError("");
+    setLoading(true);
+    try {
+      await db.auth.loginViaEmailPassword(demoEmail, demoPassword);
+      window.location.href = "/workspace";
+    } catch (err) {
+      setError(err.message || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthLayout
       icon={LogIn}
@@ -122,6 +137,50 @@ export default function Login() {
           )}
         </Button>
       </form>
+
+      <div className="mt-8 pt-6 border-t border-border">
+        <p className="text-xs text-center text-muted-foreground mb-4 font-medium">
+          Demo Accounts (Click to auto-fill & login)
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handleDemoLogin("student@lumen.ai", "password123")}
+            className="text-xs h-9 justify-start px-3 bg-card hover:bg-accent border border-border"
+          >
+            <span className="font-semibold mr-1">Student:</span> Sam
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handleDemoLogin("parent@lumen.ai", "password123")}
+            className="text-xs h-9 justify-start px-3 bg-card hover:bg-accent border border-border"
+          >
+            <span className="font-semibold mr-1">Parent:</span> Patricia
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handleDemoLogin("staff@lumen.ai", "password123")}
+            className="text-xs h-9 justify-start px-3 bg-card hover:bg-accent border border-border"
+          >
+            <span className="font-semibold mr-1">Staff:</span> Harry
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handleDemoLogin("volunteer@lumen.ai", "password123")}
+            className="text-xs h-9 justify-start px-3 bg-card hover:bg-accent border border-border"
+          >
+            <span className="font-semibold mr-1">Volunteer:</span> Valerie
+          </Button>
+        </div>
+      </div>
     </AuthLayout>
   );
 }
