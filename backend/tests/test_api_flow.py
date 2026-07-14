@@ -162,3 +162,27 @@ def test_lumen_flow(client):
     status_data = status_response.json()
     assert status_data["provider"] == "Google Gemini"
     assert status_data["status"] in ["connected", "mock"]
+
+    # 14. Get User Progress
+    progress_response = client.get("/api/stories/progress", headers=headers)
+    assert progress_response.status_code == 200
+    progress_data = progress_response.json()
+    assert progress_data["status"] == "success"
+    assert len(progress_data["data"]) > 0
+    progress_id = progress_data["data"][0]["id"]
+
+    # 15. Update Progress by ID
+    update_progress_response = client.put(
+        f"/api/stories/progress/{progress_id}",
+        headers=headers,
+        json={
+            "current_scene": 1,
+            "completed": False,
+            "completion_percentage": 50.0
+        }
+    )
+    assert update_progress_response.status_code == 200
+    update_progress_data = update_progress_response.json()
+    assert update_progress_data["status"] == "success"
+    assert update_progress_data["data"]["current_scene"] == 1
+    assert update_progress_data["data"]["completion_percentage"] == 50.0

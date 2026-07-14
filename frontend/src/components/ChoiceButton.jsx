@@ -13,9 +13,9 @@ export default function ChoiceButton({ label, letter, selected, revealed, isReco
       className={cn(
         'group relative w-full text-left p-4 rounded-xl border-2 transition-all duration-300',
         !revealed && !selected && 'border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 hover:border-aiblue/50 dark:hover:border-aiblue-light/50 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-md dark:hover:shadow-[0_0_20px_rgba(56,189,248,0.15)]',
-        selected && !revealed && 'border-aiblue bg-aiblue/5',
-        showCorrect && 'border-success bg-success/5',
-        showIncorrect && 'border-destructive/40 bg-destructive/5',
+        selected && !revealed && 'border-aiblue bg-aiblue/5 dark:bg-aiblue/10',
+        showCorrect && 'border-success bg-success/5 dark:bg-success/10',
+        showIncorrect && 'border-destructive/40 bg-destructive/5 dark:bg-destructive/10',
         disabled && !selected && 'opacity-50 cursor-not-allowed',
         !disabled && 'cursor-pointer'
       )}

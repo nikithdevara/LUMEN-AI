@@ -59,6 +59,14 @@ export default function Profile() {
     ? new Date(user.created_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
     : 'Recently';
 
+  const roleDisplayNames = {
+    'student': 'Student Track',
+    'parent': 'Parent Track',
+    'hotel_staff': 'Hotel Staff Track',
+    'volunteer': 'Volunteer Track'
+  };
+  const activeRoleName = roleDisplayNames[user?.onboarding_role] || 'Student Track';
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -79,9 +87,20 @@ export default function Profile() {
           </div>
           <div className="flex-1">
             <h1 className="font-heading font-extrabold text-2xl text-navy mb-1">{userName}</h1>
-            <div className="flex items-center gap-4 text-sm text-slate-400">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-slate-400">
               <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> {user?.email}</span>
               <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> Joined {joinDate}</span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-aiblue/10 text-aiblue dark:bg-primary/20 dark:text-primary">
+                {activeRoleName}
+              </span>
+            </div>
+            <div className="mt-2.5 flex items-center gap-2">
+              <Link
+                to="/onboarding"
+                className="text-xs font-semibold text-aiblue dark:text-primary hover:underline flex items-center gap-1"
+              >
+                Change Role Track <ArrowRight className="w-3 h-3" />
+              </Link>
             </div>
           </div>
           <div className="flex gap-3">

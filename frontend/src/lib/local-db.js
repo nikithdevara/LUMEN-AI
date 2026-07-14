@@ -36,11 +36,17 @@ const localDb = {
       try {
         const res = await client.get(`${API_BASE}/users/profile`, { headers: getHeaders() });
         const profile = res.data.data;
+        const roleMapReverse = {
+          'Student': 'student',
+          'Parent': 'parent',
+          'Hotel Staff': 'hotel_staff',
+          'Volunteer': 'volunteer'
+        };
         return {
           id: profile.id,
           email: profile.email,
           full_name: profile.name,
-          onboarding_role: profile.role || 'Student',
+          onboarding_role: roleMapReverse[profile.role_name] || 'student',
         };
       } catch (e) {
         return null;
@@ -108,7 +114,14 @@ const localDb = {
       window.location.href = '/login';
     },
     updateMe: async ({ onboarding_role }) => {
-      const res = await client.put(`${API_BASE}/users/role`, { role_name: onboarding_role }, { headers: getHeaders() });
+      const roleMap = {
+        'student': 'Student',
+        'parent': 'Parent',
+        'hotel_staff': 'Hotel Staff',
+        'volunteer': 'Volunteer'
+      };
+      const backendRoleName = roleMap[onboarding_role] || onboarding_role;
+      const res = await client.put(`${API_BASE}/users/role`, { role_name: backendRoleName }, { headers: getHeaders() });
       return res.data;
     },
     resetPassword: async () => true,
@@ -168,32 +181,58 @@ const localDb = {
     UserProgress: {
       list: async () => {
         try {
-          const res = await client.get(`${API_BASE}/stories`, { headers: getHeaders() });
-          return [];
+          const res = await client.get(`${API_BASE}/story/progress`, { headers: getHeaders() });
+          return (res.data.data || []).map(p => ({
+            id: p.id,
+            experience_id: p.story_id.toString(),
+            status: p.completed ? 'completed' : 'in_progress',
+            current_scene: p.current_scene,
+            progress_percent: Math.round(p.completion_percentage || 0)
+          }));
         } catch (e) {
           return [];
         }
       },
       filter: async ({ experience_id }) => {
-        return [];
+        try {
+          const list = await localDb.entities.UserProgress.list();
+          return list.filter(p => p.experience_id === experience_id.toString());
+        } catch (e) {
+          return [];
+        }
       },
       create: async ({ experience_id }) => {
         try {
-          const res = await client.post(`${API_BASE}/story/start`, { story_id: parseInt(experience_id) }, { headers: getHeaders() });
+          const profileRes = await client.get(`${API_BASE}/users/profile`, { headers: getHeaders() });
+          const userId = profileRes.data?.data?.id;
+          const res = await client.post(`${API_BASE}/story/start`, {
+            user_id: userId,
+            story_id: parseInt(experience_id)
+          }, { headers: getHeaders() });
           const data = res.data.data;
           return {
             id: data.progress_id || 1,
-            experience_id,
+            experience_id: experience_id.toString(),
             status: 'in_progress',
             current_scene: 0,
             progress_percent: 0,
           };
         } catch (e) {
-          return { experience_id, status: 'in_progress' };
+          return { id: 1, experience_id: experience_id.toString(), status: 'in_progress', current_scene: 0, progress_percent: 0 };
         }
       },
       update: async (id, updateFields) => {
-        return { id, ...updateFields };
+        try {
+          const completed = updateFields.status === 'completed' || updateFields.progress_percent === 100;
+          await client.put(`${API_BASE}/story/progress/${id}`, {
+            current_scene: updateFields.current_scene || 0,
+            completed: completed,
+            completion_percentage: updateFields.progress_percent || 0.0
+          }, { headers: getHeaders() });
+          return { id, ...updateFields };
+        } catch (e) {
+          return { id, ...updateFields };
+        }
       }
     },
     Achievement: {
@@ -203,13 +242,20 @@ const localDb = {
       list: async () => {
         try {
           const res = await client.get(`${API_BASE}/recommendations`, { headers: getHeaders() });
-          return (res.data.data || []).map((text, idx) => ({
-            id: idx,
-            title: text,
-            description: 'Actionable guidance recommendations.',
-            category: 'Safety Guidelines',
-            created_date: new Date().toISOString()
-          }));
+          return (res.data.data || []).map((item, idx) => {
+            const isObj = item && typeof item === 'object';
+            return {
+              id: isObj ? (item.id || idx) : idx,
+              title: isObj ? (item.title || '') : item,
+              desc: isObj ? (item.description || 'Actionable guidance recommendations.') : 'Actionable guidance recommendations.',
+              description: isObj ? (item.description || 'Actionable guidance recommendations.') : 'Actionable guidance recommendations.',
+              category: isObj ? (item.category || 'Safety Guidelines') : 'Safety Guidelines',
+              type: isObj ? (item.type || 'Guide') : 'Guide',
+              duration: isObj ? (item.duration || '5 min read') : '5 min read',
+              url: isObj ? (item.resource_url || '') : '',
+              created_date: new Date().toISOString()
+            };
+          });
         } catch (e) {
           return [];
         }

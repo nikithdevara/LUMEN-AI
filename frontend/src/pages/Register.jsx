@@ -47,7 +47,7 @@ export default function Register() {
       if (result?.access_token) {
         db.auth.setToken(result.access_token);
       }
-      window.location.href = "/workspace";
+      window.location.href = "/onboarding";
     } catch (err) {
       setError(err.message || "Invalid verification code");
     } finally {

@@ -122,11 +122,11 @@ export default function KnowledgeCheck() {
             </div>
           </div>
           <h2 className="font-heading font-extrabold text-3xl text-navy mb-2">{passed ? 'Well done!' : 'Keep learning!'}</h2>
-          <p className="text-slate-500 mb-6">You scored {score} out of {total} ({percentage}%)</p>
+          <p className="text-slate-500 dark:text-slate-400 mb-6">You scored {score} out of {total} ({percentage}%)</p>
 
-          <div className="bg-slate-50 rounded-2xl p-6 mb-6">
+          <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 mb-6">
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-slate-500">Learning Score</span>
+              <span className="text-slate-500 dark:text-slate-400">Learning Score</span>
               <span className="font-heading font-bold text-navy">{percentage}%</span>
             </div>
             <ProgressBar value={percentage} height="h-3" color={passed ? 'success' : 'ai'} />
@@ -136,7 +136,7 @@ export default function KnowledgeCheck() {
             <button onClick={() => navigate('/recommendations')} className="flex-1 flex items-center justify-center gap-2 bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy-dark transition-all">
               View Recommendations <ArrowRight className="w-4 h-4" />
             </button>
-            <button onClick={handleRestart} className="flex items-center justify-center gap-2 bg-white border border-slate-200 text-navy font-semibold px-5 py-3 rounded-xl hover:bg-slate-50 transition-all">
+            <button onClick={handleRestart} className="flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-navy font-semibold px-5 py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
               <RotateCcw className="w-4 h-4" /> Retry
             </button>
           </div>
@@ -187,20 +187,20 @@ export default function KnowledgeCheck() {
                   onClick={() => handleSelect(idx)}
                   disabled={revealed}
                   className={`group w-full text-left p-3.5 rounded-xl border-2 transition-all duration-300 ${
-                    !revealed && !isSelected ? 'border-slate-200 bg-white/50 hover:border-aiblue/50 hover:bg-white/80 cursor-pointer' : ''
-                  } ${isSelected && !revealed ? 'border-aiblue bg-aiblue/5' : ''} ${
-                    showCorrect ? 'border-success bg-success/5' : ''
-                  } ${showIncorrect ? 'border-destructive/40 bg-destructive/5' : ''} ${
-                    revealed && !isSelected && !isCorrect ? 'border-slate-100 opacity-50' : ''
+                    !revealed && !isSelected ? 'border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 hover:border-aiblue/50 dark:hover:border-aiblue/50 hover:bg-white/80 dark:hover:bg-slate-800/80 cursor-pointer' : ''
+                  } ${isSelected && !revealed ? 'border-aiblue bg-aiblue/5 dark:bg-aiblue/10' : ''} ${
+                    showCorrect ? 'border-success bg-success/5 dark:bg-success/10' : ''
+                  } ${showIncorrect ? 'border-destructive/40 bg-destructive/5 dark:bg-destructive/10' : ''} ${
+                    revealed && !isSelected && !isCorrect ? 'border-slate-100 dark:border-slate-900/40 opacity-50' : ''
                   } ${revealed ? 'cursor-default' : ''}`}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-semibold transition-colors ${
-                      !revealed && !isSelected ? 'bg-slate-100 text-slate-500 group-hover:bg-aiblue/10 group-hover:text-aiblue' : ''
+                      !revealed && !isSelected ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-aiblue/10 dark:group-hover:bg-aiblue/20 group-hover:text-aiblue' : ''
                     } ${isSelected && !revealed ? 'bg-aiblue text-white' : ''} ${
                       showCorrect ? 'bg-success text-white' : ''
                     } ${showIncorrect ? 'bg-destructive/80 text-white' : ''} ${
-                      revealed && !isSelected && !isCorrect ? 'bg-slate-100 text-slate-400' : ''
+                      revealed && !isSelected && !isCorrect ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500' : ''
                     }`}>
                       {showCorrect ? <Check className="w-3.5 h-3.5" /> : showIncorrect ? <X className="w-3.5 h-3.5" /> : String.fromCharCode(65 + idx)}
                     </div>
@@ -216,7 +216,7 @@ export default function KnowledgeCheck() {
           <div className="animate-fade-in-up space-y-3">
             <AIAssistantCard title="AI Explanation">
               <p className="mb-3">{question.explanation}</p>
-              <div className="flex items-start gap-2 p-3 bg-gold/5 rounded-xl border border-gold/15">
+              <div className="flex items-start gap-2 p-3 bg-gold/5 dark:bg-gold/10 rounded-xl border border-gold/15 dark:border-gold/20">
                 <Sparkles className="w-4 h-4 text-gold-dark flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-navy">{question.aiInsight}</p>
               </div>

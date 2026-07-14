@@ -131,7 +131,7 @@ export default function Reflection() {
             className={`group w-full flex items-center justify-center gap-2 font-semibold py-3.5 rounded-xl transition-all ${
               allFilled && !generating
                 ? 'bg-navy text-white hover:bg-navy-dark hover:shadow-xl'
-                : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
             }`}
           >
             {generating ? (
@@ -170,7 +170,7 @@ export default function Reflection() {
               </div>
             </div>
 
-            <div className="p-4 bg-gold/5 rounded-xl border border-gold/15">
+            <div className="p-4 bg-gold/5 dark:bg-gold/10 rounded-xl border border-gold/15 dark:border-gold/20">
               <p className="text-xs font-semibold text-gold-dark uppercase tracking-wide mb-1">Personal Insight</p>
               <p className="text-sm text-navy">{aiResult.personal_insight}</p>
             </div>
@@ -180,7 +180,7 @@ export default function Reflection() {
             <button onClick={() => navigate(`/knowledge-check/${id}`)} className="flex-1 flex items-center justify-center gap-2 bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy-dark transition-all">
               Take Knowledge Check <ArrowRight className="w-4 h-4" />
             </button>
-            <button onClick={() => navigate('/workspace')} className="flex-1 flex items-center justify-center gap-2 bg-white border border-slate-200 text-navy font-semibold py-3 rounded-xl hover:bg-slate-50 transition-all">
+            <button onClick={() => navigate('/workspace')} className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-navy font-semibold py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
               Back to Workspace
             </button>
           </div>

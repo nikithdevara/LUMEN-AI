@@ -31,10 +31,15 @@ class StoryOut(BaseModel):
         from_attributes = True
 
 class StoryStartRequest(BaseModel):
-    user_id: int
+    user_id: Optional[int] = None
     story_id: int
 
 class StoryContinueRequest(BaseModel):
-    user_id: int
+    user_id: Optional[int] = None
     story_id: int
     selected_choice: str  # The choice label or choice ID
+
+class ProgressUpdateSchema(BaseModel):
+    current_scene: int
+    completed: bool
+    completion_percentage: float

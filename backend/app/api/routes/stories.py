@@ -4,7 +4,7 @@ from app.database.connection import get_db
 from app.api.deps import get_current_user
 from app.models.user import User, Role
 from app.models.story import Story, StoryScene, UserStoryProgress
-from app.schemas.story import StoryStartRequest, StoryContinueRequest
+from app.schemas.story import StoryStartRequest, StoryContinueRequest, ProgressUpdateSchema
 from app.ai_engine import generate_story
 from app.utils.exceptions import LumenException
 
@@ -145,14 +145,15 @@ def start_story(
         raise LumenException(status_code=404, message="First scene of story not found")
 
     # Set or reset progress
+    user_id = req.user_id if req.user_id is not None else current_user.id
     progress = db.query(UserStoryProgress).filter(
-        UserStoryProgress.user_id == req.user_id,
+        UserStoryProgress.user_id == user_id,
         UserStoryProgress.story_id == req.story_id
     ).first()
 
     if not progress:
         progress = UserStoryProgress(
-            user_id=req.user_id,
+            user_id=user_id,
             story_id=req.story_id,
             current_scene=0,
             completion_percentage=0.0,
@@ -164,10 +165,12 @@ def start_story(
         progress.completion_percentage = 0.0
         progress.completed = False
     db.commit()
+    db.refresh(progress)
 
     return {
         "status": "success",
         "data": {
+            "progress_id": progress.id,
             "story_id": story.id,
             "title": story.title,
             "scene": {
@@ -187,8 +190,9 @@ def continue_story(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    user_id = req.user_id if req.user_id is not None else current_user.id
     progress = db.query(UserStoryProgress).filter(
-        UserStoryProgress.user_id == req.user_id,
+        UserStoryProgress.user_id == user_id,
         UserStoryProgress.story_id == req.story_id
     ).first()
 
@@ -255,5 +259,59 @@ def continue_story(
                 "choices": next_scene.choices_json,
                 "learning_objective": next_scene.learning_objective
             } if next_scene else None
+        }
+    }
+
+@router.get("/progress")
+def get_user_progress(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    progress_list = db.query(UserStoryProgress).filter(
+        UserStoryProgress.user_id == current_user.id
+    ).all()
+    return {
+        "status": "success",
+        "data": [
+            {
+                "id": p.id,
+                "story_id": p.story_id,
+                "current_scene": p.current_scene,
+                "completion_percentage": p.completion_percentage,
+                "completed": p.completed
+            }
+            for p in progress_list
+        ]
+    }
+
+@router.put("/progress/{progress_id}")
+def update_progress_by_id(
+    progress_id: int,
+    req: ProgressUpdateSchema,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    progress = db.query(UserStoryProgress).filter(
+        UserStoryProgress.id == progress_id,
+        UserStoryProgress.user_id == current_user.id
+    ).first()
+    
+    if not progress:
+        raise LumenException(status_code=404, message="Progress record not found")
+        
+    progress.current_scene = req.current_scene
+    progress.completed = req.completed
+    progress.completion_percentage = req.completion_percentage
+    db.commit()
+    db.refresh(progress)
+    
+    return {
+        "status": "success",
+        "data": {
+            "id": progress.id,
+            "story_id": progress.story_id,
+            "current_scene": progress.current_scene,
+            "completion_percentage": progress.completion_percentage,
+            "completed": progress.completed
         }
     }

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Search, Filter, BookOpen, Clock, ArrowUpRight, Library, X } from 'lucide-react';
 import ResourceCard from '@/components/ResourceCard';
+import ResourceDetailDrawer from '@/components/ResourceDetailDrawer';
 
 const types = ['All', 'Article', 'Guide', 'Video', 'Awareness Material'];
 const categories = ['All', 'Learning Resources', 'Safety Guidelines', 'Community Actions', 'Awareness Materials'];
@@ -14,6 +15,8 @@ export default function ResourceLibrary() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [selectedResource, setSelectedResource] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -136,7 +139,14 @@ export default function ResourceLibrary() {
       ) : filtered.length > 0 ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in">
           {filtered.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} onClick={() => resource.url && window.open(resource.url, '_blank')} />
+            <ResourceCard 
+              key={resource.id} 
+              resource={resource} 
+              onClick={() => {
+                setSelectedResource(resource);
+                setDrawerOpen(true);
+              }} 
+            />
           ))}
         </div>
       ) : (
@@ -153,6 +163,13 @@ export default function ResourceLibrary() {
           )}
         </div>
       )}
+
+      {/* Reader Drawer overlay pane */}
+      <ResourceDetailDrawer 
+        isOpen={drawerOpen} 
+        onClose={() => setDrawerOpen(false)} 
+        resource={selectedResource} 
+      />
     </div>
   );
 }

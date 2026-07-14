@@ -125,7 +125,7 @@ export default function StoryExperience() {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <button onClick={handleBack} className="p-2 rounded-xl hover:bg-slate-100 transition-colors">
+            <button onClick={handleBack} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               <ArrowLeft className="w-5 h-5 text-navy" />
             </button>
             <div>
@@ -146,7 +146,7 @@ export default function StoryExperience() {
           <div
             key={i}
             className={`flex-shrink-0 h-1.5 rounded-full transition-all duration-300 ${
-              i === currentSceneIdx ? 'w-10 bg-aiblue' : i < currentSceneIdx ? 'w-6 bg-aiblue/40' : 'w-6 bg-slate-200'
+              i === currentSceneIdx ? 'w-10 bg-aiblue' : i < currentSceneIdx ? 'w-6 bg-aiblue/40' : 'w-6 bg-slate-200 dark:bg-slate-800'
             }`}
           />
         ))}
@@ -164,7 +164,7 @@ export default function StoryExperience() {
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Story</span>
             </div>
             <h2 className="font-heading font-bold text-xl text-navy mb-3">{currentScene?.title}</h2>
-            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{currentScene?.narrative}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">{currentScene?.narrative}</p>
           </div>
         </div>
 
@@ -209,7 +209,7 @@ export default function StoryExperience() {
           {/* Outcome */}
           {revealed && selectedChoice && (
             <div className="animate-fade-in-up">
-              <div className="bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl p-4">
+              <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-xl p-4">
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Outcome</p>
                 <p className="text-sm text-navy">{selectedChoice.outcome}</p>
               </div>
@@ -229,7 +229,7 @@ export default function StoryExperience() {
           {revealed && selectedChoice ? (
             <AIAssistantCard title="Why this choice matters" streaming={!revealed}>
               <TypingText text={selectedChoice.ai_explanation} className="mb-3" />
-              <div className="flex items-start gap-2 p-3 bg-aiblue/5 rounded-xl border border-aiblue/10">
+              <div className="flex items-start gap-2 p-3 bg-aiblue/5 dark:bg-aiblue/10 rounded-xl border border-aiblue/10 dark:border-aiblue/20">
                 <Lightbulb className="w-4 h-4 text-aiblue flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-navy">
                   {selectedChoice.is_recommended
