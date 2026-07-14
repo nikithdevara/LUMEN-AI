@@ -140,7 +140,11 @@ export default function AIStudioDashboard() {
         {filteredTools.map((tool) => {
           const Icon = tool.icon;
           return (
-            <div key={tool.id} className="glass-card p-6 flex flex-col justify-between hover:scale-[1.02] active:scale-[0.99] transition-all group relative overflow-hidden">
+            <Link
+              key={tool.id}
+              to={tool.path}
+              className="glass-card p-6 flex flex-col justify-between hover:scale-[1.02] active:scale-[0.99] cursor-pointer transition-all group relative overflow-hidden text-left block"
+            >
               <div className="absolute top-0 right-0 w-24 h-24 bg-navy/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
               <div>
                 <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4`}>
@@ -154,15 +158,12 @@ export default function AIStudioDashboard() {
                 <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 text-slate-400 uppercase tracking-wide">
                   {tool.category}
                 </span>
-                <Link
-                  to={tool.path}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-navy dark:text-white group-hover:translate-x-1 transition-transform"
-                >
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-navy dark:text-white group-hover:translate-x-1 transition-transform">
                   Launch Tool
                   <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                </span>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
