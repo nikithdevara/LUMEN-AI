@@ -161,7 +161,10 @@ export default function AIWorkspace({
                     </div>
                   </div>
                   <p className="text-sm font-heading font-semibold text-navy dark:text-white animate-pulse">LUMEN AI is thinking...</p>
-                  <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Connecting to Google Gemini 2.5 Pro to compile guidelines and design templates.</p>
+                  <p className="text-xs text-aiblue dark:text-primary font-semibold mt-2.5 mb-1 bg-aiblue/5 dark:bg-primary/10 px-3 py-1 rounded-full border border-aiblue/10 dark:border-primary/10 inline-block animate-pulse">
+                    Estimated time: 5-8 seconds
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1.5 max-w-xs mx-auto">Connecting to Google Gemini 2.5 Pro to compile guidelines and design templates.</p>
                 </div>
               ) : hasOutput ? (
                 <div className="space-y-4 animate-fade-in">

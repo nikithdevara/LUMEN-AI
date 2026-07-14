@@ -1,3 +1,5 @@
+const db = globalThis.__B44_DB__ || {};
+
 import React, { useState } from 'react';
 import { Presentation as PresentationIcon, Tv, BookOpen } from 'lucide-react';
 import AIWorkspace from './AIWorkspace';

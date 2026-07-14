@@ -1,3 +1,5 @@
+const db = globalThis.__B44_DB__ || {};
+
 import React, { useState } from 'react';
 import { FileText, Award } from 'lucide-react';
 import AIWorkspace from './AIWorkspace';
