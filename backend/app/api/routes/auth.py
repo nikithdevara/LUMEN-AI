@@ -43,13 +43,16 @@ def register(user_in: UserRegister, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
 
+    access_token = security.create_access_token(subject=db_user.email)
+
     return {
         "status": "success",
         "data": {
             "id": db_user.id,
             "name": db_user.name,
             "email": db_user.email,
-            "role": student_role.role_name if student_role else None
+            "role": student_role.role_name if student_role else None,
+            "access_token": access_token
         }
     }
 
