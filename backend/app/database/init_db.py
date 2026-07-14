@@ -15,23 +15,12 @@ def init_db():
         Base.metadata.create_all(bind=engine)
         logger.info("Database schemas created successfully.")
         
-        # Seed default roles
+        # Seed all default database entities
         db = SessionLocal()
         try:
-            default_roles = ["Student", "Parent", "Hotel Staff", "Volunteer"]
-            roles_seeded = 0
-            
-            for r_name in default_roles:
-                existing = db.query(Role).filter(Role.role_name == r_name).first()
-                if not existing:
-                    db.add(Role(role_name=r_name))
-                    roles_seeded += 1
-            
-            if roles_seeded > 0:
-                db.commit()
-                logger.info(f"Successfully seeded {roles_seeded} default roles.")
-            else:
-                logger.info("Default roles already seeded.")
+            from app.database.seeds import seed_all_defaults
+            seed_all_defaults(db)
+            logger.info("Successfully seeded database entities.")
         finally:
             db.close()
             
