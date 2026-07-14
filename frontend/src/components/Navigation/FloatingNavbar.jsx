@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Lightbulb, Library, User, Menu, X, Bell } from 'lucide-react';
+import { LayoutDashboard, Lightbulb, Library, User, Menu, X, Bell, Sparkles } from 'lucide-react';
 import GlassContainer from './GlassContainer';
 import NavItem from './NavItem';
 import SearchControl from './SearchControl';
@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { label: 'Workspace', path: '/workspace', icon: LayoutDashboard },
   { label: 'Learn', path: '/recommendations', icon: Lightbulb },
+  { label: 'AI Studio', path: '/ai-studio', icon: Sparkles },
   { label: 'Resources', path: '/resources', icon: Library },
   { label: 'Profile', path: '/profile', icon: User }
 ];

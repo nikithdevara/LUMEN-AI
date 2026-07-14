@@ -23,6 +23,15 @@ import ResourceLibrary from '@/pages/ResourceLibrary';
 import Profile from '@/pages/Profile';
 import Settings from '@/pages/Settings';
 import Dashboard from '@/pages/Dashboard';
+import AIStudio from '@/pages/AIStudio';
+import PosterGenerator from '@/pages/AIStudio/Poster';
+import CampaignGenerator from '@/pages/AIStudio/Campaign';
+import PresentationGenerator from '@/pages/AIStudio/Presentation';
+import DocumentGenerator from '@/pages/AIStudio/Document';
+import SocialMediaGenerator from '@/pages/AIStudio/Social';
+import VideoScriptGenerator from '@/pages/AIStudio/Video';
+import NGOResourceEngine from '@/pages/AIStudio/NGO';
+import GovernmentResourceEngine from '@/pages/AIStudio/Government';
 
 function App() {
   return (
@@ -53,6 +62,15 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/ai-studio" element={<AIStudio />} />
+                <Route path="/ai-studio/poster" element={<PosterGenerator />} />
+                <Route path="/ai-studio/campaign" element={<CampaignGenerator />} />
+                <Route path="/ai-studio/presentation" element={<PresentationGenerator />} />
+                <Route path="/ai-studio/document" element={<DocumentGenerator />} />
+                <Route path="/ai-studio/social" element={<SocialMediaGenerator />} />
+                <Route path="/ai-studio/video" element={<VideoScriptGenerator />} />
+                <Route path="/ai-studio/ngo" element={<NGOResourceEngine />} />
+                <Route path="/ai-studio/government" element={<GovernmentResourceEngine />} />
               </Route>
             </Route>
 

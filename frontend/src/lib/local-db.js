@@ -348,6 +348,40 @@ const localDb = {
         };
       }
     }
+  },
+  aiStudio: {
+    generatePoster: async (payload) => {
+      const res = await client.post(`${API_BASE}/ai/poster/generate`, payload, { headers: getHeaders() });
+      return res.data;
+    },
+    generateCampaign: async (payload) => {
+      const res = await client.post(`${API_BASE}/ai/campaign/generate`, payload, { headers: getHeaders() });
+      return res.data;
+    },
+    generatePresentation: async (payload) => {
+      const res = await client.post(`${API_BASE}/ai/presentation/generate`, payload, { headers: getHeaders() });
+      return res.data;
+    },
+    generateDocument: async (payload) => {
+      const res = await client.post(`${API_BASE}/ai/document/generate`, payload, { headers: getHeaders() });
+      return res.data;
+    },
+    generateSocial: async (payload) => {
+      const res = await client.post(`${API_BASE}/ai/social/generate`, payload, { headers: getHeaders() });
+      return res.data;
+    },
+    generateVideo: async (payload) => {
+      const res = await client.post(`${API_BASE}/ai/video/generate`, payload, { headers: getHeaders() });
+      return res.data;
+    },
+    recommendNGO: async (payload) => {
+      const res = await client.post(`${API_BASE}/ai/ngo/recommend`, payload, { headers: getHeaders() });
+      return res.data;
+    },
+    recommendGovernment: async (payload) => {
+      const res = await client.post(`${API_BASE}/ai/government/recommend`, payload, { headers: getHeaders() });
+      return res.data;
+    }
   }
 };
 
